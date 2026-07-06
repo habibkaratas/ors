@@ -1,0 +1,12 @@
+.vscode/**
+.claude/**
+src/**
+e2e/**
+node_modules/**
+esbuild.js
+tsconfig.json
+**/*.map
+.gitignore
+*.vsix
+CLAUDE.md
+ROADMAP.md
