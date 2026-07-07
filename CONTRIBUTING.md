@@ -1,77 +1,78 @@
-# Katkı Rehberi
+# Contributing Guide
 
-Örs'e katkıda bulunmak istediğin için teşekkürler. Örs **yerel-öncelikli** bir
-kodlama asistanıdır; katkılar bu felsefeyi (bulut zorlaması yok, kilitlenme yok,
-şeffaf onay) korumalıdır.
+Thanks for your interest in contributing to Örs. Örs is a **local-first** coding assistant;
+contributions should preserve that philosophy (no cloud push, no lock-in, transparent
+approval).
 
-## Başlamadan önce
+## Before you start
 
-- Büyük bir değişiklik veya yeni özellik için **önce bir issue aç** ve yaklaşımı
-  konuşalım. Böylece boşa emek harcanmaz.
-- Küçük düzeltmeler (typo, net bug) için doğrudan PR açabilirsin.
+- For a large change or a new feature, **open an issue first** so we can discuss the
+  approach. That avoids wasted effort.
+- For small fixes (a typo, a clear bug), you can open a PR directly.
 
-## Geliştirme ortamı
+## Development setup
 
 ```bash
 npm install
-npm run compile     # geliştirme derlemesi (sourcemap)
-npm run watch       # değişiklikleri izle + otomatik yeniden derleme
+npm run compile     # development build (sourcemaps)
+npm run watch       # watch for changes + rebuild automatically
 ```
 
-VSCode'da klasörü aç, **F5** → Extension Development Host penceresi açılır.
-Ön koşul: yerelde bir **Ollama** sunucusu çalışıyor olmalı (bkz. README).
+Open the folder in VSCode and press **F5** → an Extension Development Host window opens.
+Prerequisite: a local **Ollama** server must be running (see the README).
 
-Paketleme:
+Packaging:
 
 ```bash
-npm run package     # kök dizinde ors.vsix üretir
+npm run package     # produces ors.vsix at the repo root
 ```
 
-## Branch ve PR akışı
+## Branch and PR flow
 
-1. Repo'yu **fork**'la.
-2. Değişikliğin için bir dal aç — **özelliğe göre**, katmana göre değil:
-   - `feat/kisa-aciklama` — yeni özellik
-   - `fix/kisa-aciklama` — hata düzeltmesi
+1. **Fork** the repo.
+2. Create a branch for your change — **named by feature, not by layer**:
+   - `feat/short-description` — a new feature
+   - `fix/short-description` — a bug fix
    - `docs/…`, `refactor/…`, `chore/…`
-   > Bir değişiklik genelde birçok `src/` katmanına dokunur (ör. bir özellik
-   > `webview/` + `shared/` + `tools/`). Bu normaldir; branch'i özelliğe göre tut.
-3. `master`'a karşı **PR** aç. PR şablonunu doldur.
-4. **CI** (tsc + build) yeşil olmalı. Maintainer inceleyip **squash-merge** eder.
+   > A change usually touches several `src/` layers (e.g. a feature spans `webview/` +
+   > `shared/` + `tools/`). That's normal; keep the branch scoped to the feature.
+3. Open a **PR** against `master`. Fill in the PR template.
+4. **CI** (tsc + build) must be green. A maintainer reviews and **squash-merges**.
 
-`master` korumalıdır: doğrudan push ve force-push kapalıdır; her şey PR'dan geçer.
+`master` is protected: direct pushes and force-pushes are disabled; everything goes through
+a PR.
 
-## Kod standartları
+## Code standards
 
-- **Çevredeki kodun stiline uy** — adlandırma, yoğunluk, dil.
-- **Gereksiz yorum yazma.** Yalnızca koddan anlaşılmayan "neden"i açıkla; "ne yaptığını"
-  tekrar eden yorumlar eklenmez.
-- Değişikliğin öncesinde şunlar geçmeli:
+- **Match the surrounding code style** — naming, density, language.
+- **Don't write unnecessary comments.** Only explain the "why" that isn't clear from the
+  code; comments that restate "what the code does" are not added.
+- Before your change, these must pass:
   ```bash
   npx tsc --noEmit -p tsconfig.json
   node esbuild.js --production
   node --check media/main.js
   ```
 
-## Güvenlik değişmezleri (zayıflatılamaz)
+## Security invariants (must not be weakened)
 
-Aşağıdakiler bilinçli güvenlik önlemleridir; bir PR bunları gevşetemez:
+The following are deliberate security measures; a PR may not loosen them:
 
-- Komut-enjeksiyon deseni: `/[;|`]|\$\(|&&|\|\|/`
-- Yol hapsi / symlink-kaçış koruması (`resolvePath`, `realpathSync`)
-- Onay kapısı (yazma ve komutlar önizleme + onaydan geçer)
-- `buildSafeEnv()` ile alt-süreçlerden sırların ayıklanması
-- Araç kategorileri: kod çalıştıran araç `read` olarak etiketlenmez
+- Command-injection pattern: `/[;|`]|\$\(|&&|\|\|/`
+- Path jail / symlink-escape protection (`resolvePath`, `realpathSync`)
+- The approval gate (writes and commands go through a preview + approval)
+- Stripping secrets from subprocess environments via `buildSafeEnv()`
+- Tool categories: a code-executing tool is never labeled `read`
 
-Güvenlikle ilgili bir açığı sorumlu şekilde bildirmek istersen, herkese açık issue
-yerine maintainer ile özel iletişime geç.
+If you want to report a security vulnerability responsibly, contact the maintainer privately
+instead of opening a public issue.
 
-## Commit'lenmeyecekler
+## What is not committed
 
-`.gitignore` kapsamındaki iç/geçici dosyalar commit edilmez: `node_modules/`,
-`out/`, `e2e/` (test scriptleri), `ROADMAP.md` ve benzeri çalışma/plan dosyaları.
+Internal/temporary files covered by `.gitignore` are not committed: `node_modules/`,
+`out/`, `e2e/` (test scripts), `ROADMAP.md`, and similar working/planning files.
 
-## Lisans
+## License
 
-Katkı göndererek, katkının projenin **MIT** lisansı altında yayımlanacağını kabul
-etmiş olursun.
+By submitting a contribution, you agree that it will be published under the project's
+**MIT** license.
