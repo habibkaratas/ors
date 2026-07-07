@@ -713,7 +713,7 @@
       ctxChip.hidden = true;
       return;
     }
-    ctxChip.textContent = "\u25CF ~" + pct + "%";
+    ctxChip.textContent = "\u25CF " + pct + "% used";
     ctxChip.hidden = false;
     ctxChip.className =
       "chip" + (pct >= 90 ? " ctx-danger" : pct >= 70 ? " ctx-warn" : "");
