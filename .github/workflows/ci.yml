@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    name: Tip kontrolü + derleme
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Bağımlılıkları kur
+        run: npm ci
+
+      - name: Tip kontrolü (tsc)
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Üretim derlemesi (esbuild)
+        run: node esbuild.js --production
+
+      - name: Webview söz dizimi
+        run: node --check media/main.js
