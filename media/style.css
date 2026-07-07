@@ -1451,7 +1451,7 @@ body {
 }
 .model-dropdown {
     position: absolute;
-    top: calc(100% + 4px);
+    bottom: calc(100% + 4px);
     left: 0;
     right: auto;
     min-width: 180px;
