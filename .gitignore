@@ -1,0 +1,9 @@
+node_modules/
+out/
+dist/
+e2e/
+e2e-*.txt
+.DS_Store
+*.log
+.claude/
+ROADMAP.md
