@@ -1,18 +1,21 @@
 import * as vscode from "vscode";
 
-export function getHtml(webview: vscode.Webview, extensionUri: vscode.Uri): string {
+export function getHtml(
+  webview: vscode.Webview,
+  extensionUri: vscode.Uri,
+): string {
   const nonce = makeNonce();
   const scriptUri = webview.asWebviewUri(
-    vscode.Uri.joinPath(extensionUri, "media", "main.js")
+    vscode.Uri.joinPath(extensionUri, "media", "main.js"),
   );
   const styleUri = webview.asWebviewUri(
-    vscode.Uri.joinPath(extensionUri, "media", "style.css")
+    vscode.Uri.joinPath(extensionUri, "media", "style.css"),
   );
   const iconAnvil = webview.asWebviewUri(
-    vscode.Uri.joinPath(extensionUri, "media", "icons", "anvil-impact.svg")
+    vscode.Uri.joinPath(extensionUri, "media", "icons", "anvil-impact.svg"),
   );
   const iconThinking = webview.asWebviewUri(
-    vscode.Uri.joinPath(extensionUri, "media", "icons", "thinking.svg")
+    vscode.Uri.joinPath(extensionUri, "media", "icons", "thinking.svg"),
   );
   const csp = [
     `default-src 'none'`,
@@ -34,6 +37,7 @@ export function getHtml(webview: vscode.Webview, extensionUri: vscode.Uri): stri
 <body data-icon-thinking="${iconThinking}">
   <header id="topbar">
     <span id="sessionTitle" class="session-title">Örs</span>
+    <span id="serverIndicator" class="server-indicator" title="Sunucu durumu kontrol ediliyor…">●</span>
     <div class="spacer"></div>
     <button id="historyBtn" class="topbar-btn" title="Tüm sohbetler">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -202,7 +206,8 @@ export function getHtml(webview: vscode.Webview, extensionUri: vscode.Uri): stri
 }
 
 function makeNonce(): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let out = "";
   for (let i = 0; i < 32; i++) {
     out += chars.charAt(Math.floor(Math.random() * chars.length));

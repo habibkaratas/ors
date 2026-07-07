@@ -56,6 +56,11 @@
         "icon": "$(server)"
       },
       {
+        "command": "ors.manageHosts",
+        "title": "Örs: Host Yönetimi",
+        "icon": "$(server)"
+      },
+      {
         "command": "ors.focus",
         "title": "Örs: Paneli Aç"
       }
