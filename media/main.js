@@ -12,7 +12,9 @@
   const modePicker = $("modePicker");
   const effortLabel = $("effortLabel");
   const todosEl = $("todos");
-  const modelSelect = /** @type {HTMLSelectElement} */ ($("modelSelect"));
+  const modelSelectBtn = $("modelSelectBtn");
+  const modelDropdown = $("modelDropdown");
+  const modelList = $("modelList");
   const hostBtn = $("hostBtn");
   const statusChip = $("statusChip");
   const ctxChip = $("ctxChip");
@@ -288,8 +290,24 @@
     inputEl.style.height = Math.min(inputEl.scrollHeight, 160) + "px";
   }
 
-  modelSelect.addEventListener("change", () => {
-    vscode.postMessage({ type: "selectModel", model: modelSelect.value });
+  modelSelectBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    modelDropdown.hidden = !modelDropdown.hidden;
+  });
+  document.addEventListener("click", () => {
+    modelDropdown.hidden = true;
+  });
+  modelDropdown.addEventListener("click", (e) => e.stopPropagation());
+
+  modelList.addEventListener("click", (e) => {
+    const btn = /** @type {HTMLElement} */ (e.target).closest(".model-opt");
+    if (!btn) return;
+    const model = btn.dataset.model;
+    if (model) {
+      modelDropdown.hidden = true;
+      modelSelectBtn.textContent = model;
+      vscode.postMessage({ type: "selectModel", model });
+    }
   });
 
   hostBtn.addEventListener("click", () => {
@@ -332,8 +350,10 @@
       items: [
         {
           label: "Switch model…",
-          right: () => modelSelect.value || "",
-          act: () => modelSelect.focus(),
+          right: () => modelSelectBtn.textContent || "",
+          act: () => {
+            modelDropdown.hidden = !modelDropdown.hidden;
+          },
         },
         {
           label: "Change mode…",
@@ -616,24 +636,25 @@
   }
 
   function fillModels(models, current) {
-    modelSelect.innerHTML = "";
+    modelList.innerHTML = "";
     if (!models.length) {
-      const o = document.createElement("option");
-      o.value = "";
-      o.textContent = "(model yok — Ollama?)";
-      modelSelect.appendChild(o);
+      modelSelectBtn.textContent = "(model yok)";
       return;
     }
     for (const name of models) {
-      const o = document.createElement("option");
-      o.value = name;
-      o.textContent = name;
-      if (name === current) o.selected = true;
-      modelSelect.appendChild(o);
+      const btn = document.createElement("button");
+      btn.className = "model-opt" + (name === current ? " selected" : "");
+      btn.dataset.model = name;
+      btn.textContent = name;
+      if (name === current) {
+        modelSelectBtn.textContent = name;
+      }
+      modelList.appendChild(btn);
     }
     if (!current || !models.includes(current)) {
-      modelSelect.value = models[0];
-      vscode.postMessage({ type: "selectModel", model: models[0] });
+      const first = models[0];
+      modelSelectBtn.textContent = first;
+      vscode.postMessage({ type: "selectModel", model: first });
     }
   }
 

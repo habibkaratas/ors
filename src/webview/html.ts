@@ -108,7 +108,12 @@ export function getHtml(
       <span class="cbar-gap"></span>
       <span id="statusChip" class="chip" hidden></span>
       <span id="ctxChip" class="chip" hidden></span>
-      <span class="model-chip-wrap"><select id="modelSelect" class="model-chip" title="Model seç"></select></span>
+      <div id="modelSelectWrap" class="model-select-wrap">
+        <button id="modelSelectBtn" class="model-chip" title="Model seç">model</button>
+        <div id="modelDropdown" class="model-dropdown" hidden>
+          <div id="modelList" class="model-list"></div>
+        </div>
+      </div>
       <div id="modePickerWrap">
         <button id="modePickerBtn" class="mode-picker-btn" title="Mod seç">⚡ Act</button>
         <div id="modePicker" class="mode-picker" hidden>
