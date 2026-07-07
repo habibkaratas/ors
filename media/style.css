@@ -1452,8 +1452,8 @@ body {
 .model-dropdown {
     position: absolute;
     bottom: calc(100% + 4px);
-    left: 0;
-    right: auto;
+    right: 0;
+    left: auto;
     min-width: 180px;
     max-width: 260px;
     max-height: 300px;
