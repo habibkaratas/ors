@@ -598,14 +598,30 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
   private estimateCtxPct(s: SessionRuntime): number | undefined {
     const numCtx = this.readConfig().numCtx;
     if (!numCtx) return undefined;
-    const totalChars = s.transcript.reduce((sum, item) => {
+
+    // Transcript içeriği
+    let totalChars = s.transcript.reduce((sum, item) => {
       if (item.kind === "user" || item.kind === "assistant")
         return sum + item.text.length;
       if (item.kind === "tool")
         return sum + item.summary.length + item.detail.length;
       return sum;
     }, 0);
-    return Math.min(100, Math.round((totalChars / 4 / numCtx) * 100));
+
+    // Anlık streaming metni de ekle
+    if (s.streamingItem) {
+      totalChars += s.streamingItem.text.length;
+    }
+
+    // Sistem promptu (tool tanımları, kurallar, memory) — kesin hesap yoksa ~4000 varsay
+    // Agent buildSystemPrompt tipik olarak 3000-8000 karakter arasıdır
+    const SYSTEM_PROMPT_ESTIMATE = 4000;
+    totalChars += SYSTEM_PROMPT_ESTIMATE;
+
+    // Karakter → token dönüşümü (ASCII ağırlıklı kod için ~0.25 token/karakter)
+    const estimatedTokens = totalChars * 0.25;
+
+    return Math.min(100, Math.round((estimatedTokens / numCtx) * 100));
   }
 
   private emitAssistantStart(s: SessionRuntime): void {
